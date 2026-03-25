@@ -7,7 +7,7 @@ import { mockOrders } from "@/data/mockOrders";
 
 const OrdersPage = () => {
   return (
-    <div className="p-4 sm:p-6">
+    <div className="">
       <OrdersTable orders={mockOrders} />
     </div>
   );

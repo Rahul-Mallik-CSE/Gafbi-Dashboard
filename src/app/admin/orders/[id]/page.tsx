@@ -28,7 +28,7 @@ const OrderDetailsPage = () => {
   }
 
   return (
-    <div className="p-4 sm:p-6">
+    <div className="">
       <OrderDetails order={order} />
     </div>
   );
