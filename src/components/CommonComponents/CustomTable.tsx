@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -18,7 +18,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { View } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CustomTableProps<T> {
@@ -28,122 +27,27 @@ interface CustomTableProps<T> {
     accessor: keyof T | ((row: T) => React.ReactNode);
     className?: string;
   }[];
-  onAction?: (row: T) => void;
   itemsPerPage?: number;
   title?: string;
-
-  additionalCount?: number;
+  actionColumn?: {
+    header: string;
+    render: (row: T) => React.ReactNode;
+  };
 }
 
-const CustomTable = <T extends Record<string, any>>({
+const CustomTable = <T extends object>({
   data,
   columns,
-  onAction,
   itemsPerPage = 10,
   title,
+  actionColumn,
 }: CustomTableProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterState, setFilterState] = useState<FilterState | null>(null);
 
-  // Helper function to get the data key from column header
-  const getDataKeyFromHeader = (header: string): string => {
-    const words = header.split(" ");
-    return words
-      .map((word, index) =>
-        index === 0
-          ? word.toLowerCase()
-          : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-      )
-      .join("");
-  };
-
-  // Apply filtering and sorting to data
-  const filteredAndSortedData = useMemo(() => {
-    let result = [...data];
-
-    if (filterState) {
-      // Apply column filters (text search)
-      if (filterState.columnFilters.length > 0) {
-        result = result.filter((row) => {
-          return filterState.columnFilters.every((filter) => {
-            const value = row[filter.column];
-            if (value == null) return false;
-            return String(value)
-              .toLowerCase()
-              .includes(filter.value.toLowerCase());
-          });
-        });
-      }
-
-      // Apply status filter
-      if (filterState.statusFilter) {
-        const statusColumn = columns.find(
-          (col) => col.header.toLowerCase() === "status",
-        );
-        if (statusColumn) {
-          const dataKey =
-            typeof statusColumn.accessor === "string"
-              ? statusColumn.accessor
-              : getDataKeyFromHeader(statusColumn.header);
-          result = result.filter((row) => {
-            const value = row[dataKey as keyof T];
-            return String(value) === filterState.statusFilter;
-          });
-        }
-      }
-
-      // Apply ID sorting
-      if (filterState.idSort) {
-        const idColumn = columns.find(
-          (col) =>
-            col.header.toLowerCase() === "id" ||
-            col.header.toLowerCase().includes("id"),
-        );
-        if (idColumn) {
-          const dataKey =
-            typeof idColumn.accessor === "string"
-              ? idColumn.accessor
-              : getDataKeyFromHeader(idColumn.header);
-          result.sort((a, b) => {
-            const aValue = a[dataKey as keyof T];
-            const bValue = b[dataKey as keyof T];
-
-            // Handle null/undefined values
-            if (aValue == null && bValue == null) return 0;
-            if (aValue == null) return 1;
-            if (bValue == null) return -1;
-
-            // Compare values
-            let comparison = 0;
-            if (typeof aValue === "number" && typeof bValue === "number") {
-              comparison = aValue - bValue;
-            } else {
-              comparison = String(aValue).localeCompare(String(bValue));
-            }
-
-            return filterState.idSort === "asc" ? comparison : -comparison;
-          });
-        }
-      }
-    }
-
-    return result;
-  }, [data, filterState, columns]);
-
-  const totalPages = Math.ceil(filteredAndSortedData.length / itemsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentData = filteredAndSortedData.slice(startIndex, endIndex);
-
-  const handleApplyFilter = (newFilterState: FilterState) => {
-    setFilterState(newFilterState);
-    setCurrentPage(1); // Reset to first page when filter is applied
-  };
-
-  const handleClearFilter = () => {
-    setFilterState(null);
-    setCurrentPage(1);
-  };
+  const currentData = data.slice(startIndex, endIndex);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -152,7 +56,18 @@ const CustomTable = <T extends Record<string, any>>({
       case "in progress":
         return "bg-cyan-100 text-cyan-700";
       case "complete":
+      case "completed":
+        return "bg-green-100 text-green-700";
+      case "approved":
+        return "bg-green-100 text-green-700";
+      case "rejected":
+        return "bg-red-100 text-red-700";
+      case "shipped":
         return "bg-blue-100 text-blue-700";
+      case "delivered":
+        return "bg-green-100 text-green-700";
+      case "cancelled":
+        return "bg-red-100 text-red-700";
       default:
         return "bg-gray-100 text-gray-700";
     }
@@ -165,12 +80,11 @@ const CustomTable = <T extends Record<string, any>>({
 
     const value = row[column.accessor as keyof T];
 
-    // Special rendering for status
     if (column.header === "Status" && typeof value === "string") {
       return (
         <div
           className={cn(
-            "w-24 px-2  py-1 flex justify-center items-center rounded-md text-sm font-medium",
+            "w-24 px-2 py-1 flex justify-center items-center rounded-md text-sm font-medium",
             getStatusColor(value),
           )}
         >
@@ -221,44 +135,33 @@ const CustomTable = <T extends Record<string, any>>({
 
   return (
     <div className="w-full space-y-3 sm:space-y-4 overflow-x-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between px-2 sm:px-0 gap-4">
-        {title ? (
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800">
+      {title && (
+        <div className="px-2 sm:px-0">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-foreground">
             {title}
           </h2>
-        ) : (
-          <div></div>
-        )}
-        <FilterCard
-          columns={columns}
-          data={data}
-          onApplyFilter={handleApplyFilter}
-          onClearFilter={handleClearFilter}
-          currentFilter={filterState || undefined}
-        />
-      </div>
+        </div>
+      )}
 
-      {/* Table Container with Horizontal Scroll */}
-      <div className="rounded-lg overflow-hidden border border-gray-200 sm:border-0">
+      <div className="rounded-lg overflow-hidden border border-border sm:border-0">
         <div className="overflow-x-auto">
           <Table className="border-none min-w-full">
             <TableHeader>
-              <TableRow className="bg-[#F1F4F9] hover:bg-[#F1F4F9] border-none">
+              <TableRow className="bg-muted hover:bg-muted border-none">
                 {columns.map((column, index) => (
                   <TableHead
                     key={index}
                     className={cn(
-                      "font-semibold text-gray-700 text-xs sm:text-sm py-2 sm:py-3 whitespace-nowrap",
+                      "font-semibold text-foreground text-xs sm:text-sm py-2 sm:py-3 whitespace-nowrap",
                       column.className,
                     )}
                   >
                     {column.header}
                   </TableHead>
                 ))}
-                {onAction && (
-                  <TableHead className="font-semibold text-gray-700 text-xs sm:text-sm text-right py-2 sm:py-3 whitespace-nowrap">
-                    Action
+                {actionColumn && (
+                  <TableHead className="font-semibold text-foreground text-xs sm:text-sm py-2 sm:py-3 whitespace-nowrap">
+                    {actionColumn.header}
                   </TableHead>
                 )}
               </TableRow>
@@ -267,27 +170,22 @@ const CustomTable = <T extends Record<string, any>>({
               {currentData.map((row, rowIndex) => (
                 <TableRow
                   key={rowIndex}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="hover:bg-muted/50 transition-colors"
                 >
                   {columns.map((column, colIndex) => (
                     <TableCell
                       key={colIndex}
                       className={cn(
-                        "text-gray-700 py-3 sm:py-5 text-xs sm:text-sm whitespace-nowrap",
+                        "text-foreground py-3 sm:py-5 text-xs sm:text-sm whitespace-nowrap",
                         column.className,
                       )}
                     >
                       {renderCell(row, column)}
                     </TableCell>
                   ))}
-                  {onAction && (
-                    <TableCell className="text-right py-3 sm:py-5">
-                      <button
-                        onClick={() => onAction(row)}
-                        className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors inline-flex items-center justify-center"
-                      >
-                        <View className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
-                      </button>
+                  {actionColumn && (
+                    <TableCell className="py-3 sm:py-5">
+                      {actionColumn.render(row)}
                     </TableCell>
                   )}
                 </TableRow>
@@ -297,64 +195,64 @@ const CustomTable = <T extends Record<string, any>>({
         </div>
       </div>
 
-      {/* Pagination */}
-      <Pagination>
-        <PaginationContent className="flex-wrap gap-1">
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => handlePageChange(currentPage - 1)}
-              className={cn(
-                "text-xs sm:text-sm h-8 sm:h-10 px-2 sm:px-4",
-                currentPage === 1
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer",
-              )}
-            />
-          </PaginationItem>
-
-          {getPageNumbers().map((page, index) => (
-            <PaginationItem key={index} className="hidden xs:inline-flex">
-              {page === "..." ? (
-                <PaginationEllipsis className="h-8 sm:h-10" />
-              ) : (
-                <PaginationLink
-                  onClick={() => handlePageChange(page as number)}
-                  isActive={currentPage === page}
-                  className={cn(
-                    "cursor-pointer text-xs sm:text-sm h-8 sm:h-10 w-8 sm:w-10",
-                    currentPage === page &&
-                      "bg-red-800 text-white hover:bg-red-700 hover:text-white",
-                  )}
-                >
-                  {page}
-                </PaginationLink>
-              )}
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent className="flex-wrap gap-1">
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => handlePageChange(currentPage - 1)}
+                className={cn(
+                  "text-xs sm:text-sm h-8 sm:h-10 px-2 sm:px-4",
+                  currentPage === 1
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer",
+                )}
+              />
             </PaginationItem>
-          ))}
 
-          {/* Mobile: Show only current page */}
-          <PaginationItem className="xs:hidden">
-            <PaginationLink
-              isActive={true}
-              className="cursor-default bg-red-800 text-white h-8 w-8 text-xs"
-            >
-              {currentPage}
-            </PaginationLink>
-          </PaginationItem>
+            {getPageNumbers().map((page, index) => (
+              <PaginationItem key={index} className="hidden xs:inline-flex">
+                {page === "..." ? (
+                  <PaginationEllipsis className="h-8 sm:h-10" />
+                ) : (
+                  <PaginationLink
+                    onClick={() => handlePageChange(page as number)}
+                    isActive={currentPage === page}
+                    className={cn(
+                      "cursor-pointer text-xs sm:text-sm h-8 sm:h-10 w-8 sm:w-10",
+                      currentPage === page &&
+                        "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground",
+                    )}
+                  >
+                    {page}
+                  </PaginationLink>
+                )}
+              </PaginationItem>
+            ))}
 
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => handlePageChange(currentPage + 1)}
-              className={cn(
-                "text-xs sm:text-sm h-8 sm:h-10 px-2 sm:px-4",
-                currentPage === totalPages
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer",
-              )}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            <PaginationItem className="xs:hidden">
+              <PaginationLink
+                isActive={true}
+                className="cursor-default bg-primary text-primary-foreground h-8 w-8 text-xs"
+              >
+                {currentPage}
+              </PaginationLink>
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => handlePageChange(currentPage + 1)}
+                className={cn(
+                  "text-xs sm:text-sm h-8 sm:h-10 px-2 sm:px-4",
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer",
+                )}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 };
