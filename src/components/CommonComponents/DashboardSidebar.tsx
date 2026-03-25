@@ -4,6 +4,7 @@ import React from "react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -13,7 +14,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Box,
   CloudUpload,
@@ -29,17 +30,21 @@ import {
   Settings,
 } from "lucide-react";
 import { useUserRole } from "@/contexts/UserRoleContext";
+import { useState } from "react";
+import LogoutModal from "./LogOutModal";
 
 export default function DashboardSidebar() {
   const { state } = useSidebar();
   const pathname = usePathname();
+  const router = useRouter();
   const { role } = useUserRole();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const isCollapsed = state === "collapsed";
 
   const userNavItems = [
     {
-      href: "/",
+      href: "/overview",
       icon: List,
       label: "Overview",
     },
@@ -101,14 +106,14 @@ export default function DashboardSidebar() {
       icon: Settings,
       label: "Settings",
     },
-    {
-      href: "/sign-in",
-      icon: LogOut,
-      label: "Sign out",
-    },
   ];
 
   const navItems = role === "admin" ? adminNavItems : userNavItems;
+
+  const handleLogout = () => {
+    setIsLogoutModalOpen(false);
+    router.push("/sign-in");
+  };
 
   if (
     pathname == "/sign-in" ||
@@ -165,9 +170,7 @@ export default function DashboardSidebar() {
               {role === "admin" ? "Admin User" : "Alex Morgan"}
             </p>
             <p className="mt-0.5 text-[11px] leading-tight text-tertiary">
-              {role === "admin"
-                ? "admin@gafbi.com"
-                : "alexmorgan86@gmail.com"}
+              {role === "admin" ? "admin@gafbi.com" : "alexmorgan86@gmail.com"}
             </p>
           </div>
         )}
@@ -195,6 +198,32 @@ export default function DashboardSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
+
+      <SidebarFooter
+        className={cn("px-3 pb-6 pt-2", isCollapsed ? "px-1" : "")}
+      >
+        <button
+          type="button"
+          onClick={() => setIsLogoutModalOpen(true)}
+          className={cn(
+            isCollapsed
+              ? "flex size-10 items-center justify-center rounded-lg transition-colors"
+              : "flex h-10 w-full items-center gap-2.5 rounded-md px-3 text-sm transition-colors",
+            "text-primary/90 hover:bg-background/60 hover:text-primary",
+          )}
+        >
+          <LogOut size={17} strokeWidth={1.75} />
+          {!isCollapsed && (
+            <span className="text-[15px] font-medium">Logout</span>
+          )}
+        </button>
+      </SidebarFooter>
+
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+      />
     </Sidebar>
   );
 }
