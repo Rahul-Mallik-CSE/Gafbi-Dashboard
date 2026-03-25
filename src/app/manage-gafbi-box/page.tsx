@@ -1,9 +1,152 @@
 /** @format */
+"use client";
+import React, { useState } from "react";
+import { PageHeader } from "@/components/HomeComponents";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ItemsProgress,
+  MyCareBoxTab,
+  OtherProductsTab,
+  SelectedItemsSidebar,
+  type CareBoxProduct,
+  type OtherProduct,
+} from "@/components/ManageGafbiBoxComponents";
 
-import React from "react";
+const initialCareBoxItems: CareBoxProduct[] = [
+  { id: "1", name: "Surface Disinfectant", quantity: "500ml" },
+  { id: "2", name: "Surface Disinfectant", quantity: "500ml" },
+  { id: "3", name: "Surface Disinfectant", quantity: "500ml" },
+];
+
+const initialOtherProducts: OtherProduct[] = [
+  { id: "p1", name: "Hand Sanitizer", quantity: 0 },
+  { id: "p2", name: "Face Masks", quantity: 0 },
+  { id: "p3", name: "Disposable Gloves", quantity: 0 },
+  { id: "p4", name: "Antibacterial Wipes", quantity: 0 },
+  { id: "p5", name: "Body Lotion", quantity: 0 },
+  { id: "p6", name: "Wound Care Kit", quantity: 0 },
+];
+
+const MAX_ITEMS = 6;
 
 const ManageGafbiBoxPage = () => {
-  return <div>ManageGafbiBoxPage</div>;
+  const [activeTab, setActiveTab] = useState("my-care-box");
+  const [careBoxItems, setCareBoxItems] =
+    useState<CareBoxProduct[]>(initialCareBoxItems);
+  const [otherProducts, setOtherProducts] =
+    useState<OtherProduct[]>(initialOtherProducts);
+
+  const currentItemCount = careBoxItems.length;
+
+  const handleDeleteCareBoxItem = (id: string) => {
+    setCareBoxItems((items) => items.filter((item) => item.id !== id));
+  };
+
+  const handleAddProduct = (id: string) => {
+    if (currentItemCount >= MAX_ITEMS) return;
+    setOtherProducts((products) =>
+      products.map((product) =>
+        product.id === id
+          ? { ...product, quantity: product.quantity + 1 }
+          : product,
+      ),
+    );
+  };
+
+  const handleRemoveProduct = (id: string) => {
+    setOtherProducts((products) =>
+      products.map((product) =>
+        product.id === id && product.quantity > 0
+          ? { ...product, quantity: product.quantity - 1 }
+          : product,
+      ),
+    );
+  };
+
+  const handleSave = () => {
+    console.log("Saving Gafbi box...");
+  };
+
+  const selectedOtherProducts = otherProducts
+    .filter((p) => p.quantity > 0)
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      quantity: `${p.quantity}x`,
+    }));
+
+  return (
+    <div className="w-full">
+      <PageHeader title="Manage Gafbi Box" />
+
+      <div className="mt-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger
+              value="my-care-box"
+              className="flex-1 sm:flex-none px-6"
+            >
+              My care box
+            </TabsTrigger>
+            <TabsTrigger
+              value="other-products"
+              className="flex-1 sm:flex-none px-6"
+            >
+              Other products
+            </TabsTrigger>
+          </TabsList>
+
+          <div className="mt-6">
+            <TabsContent value="my-care-box">
+              <div className="max-w-2xl">
+                <div className="mb-6">
+                  <ItemsProgress
+                    currentCount={currentItemCount}
+                    maxCount={MAX_ITEMS}
+                  />
+                </div>
+                <MyCareBoxTab
+                  items={careBoxItems}
+                  onDeleteItem={handleDeleteCareBoxItem}
+                  onSave={handleSave}
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="other-products">
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="flex-1">
+                  <OtherProductsTab
+                    products={otherProducts}
+                    onAdd={handleAddProduct}
+                    onRemove={handleRemoveProduct}
+                  />
+                </div>
+                <div className="w-full lg:w-80">
+                  <SelectedItemsSidebar
+                    items={[...careBoxItems, ...selectedOtherProducts]}
+                    currentCount={
+                      currentItemCount + selectedOtherProducts.length
+                    }
+                    maxCount={MAX_ITEMS}
+                    onDeleteItem={(id) => {
+                      handleDeleteCareBoxItem(id);
+                      setOtherProducts((products) =>
+                        products.map((p) =>
+                          p.id === id ? { ...p, quantity: 0 } : p,
+                        ),
+                      );
+                    }}
+                    onSave={handleSave}
+                  />
+                </div>
+              </div>
+            </TabsContent>
+          </div>
+        </Tabs>
+      </div>
+    </div>
+  );
 };
 
 export default ManageGafbiBoxPage;
