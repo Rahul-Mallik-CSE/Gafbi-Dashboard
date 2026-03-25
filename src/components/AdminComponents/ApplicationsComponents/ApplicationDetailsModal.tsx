@@ -8,6 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { FlaskConical } from "lucide-react";
 import type { Application } from "./ApplicationsTable";
 
 interface ApplicationDetailsModalProps {
@@ -23,117 +25,156 @@ const ApplicationDetailsModal = ({
 }: ApplicationDetailsModalProps) => {
   if (!application) return null;
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "approved":
-        return "bg-green-100 text-green-700";
-      case "pending":
-        return "bg-yellow-100 text-yellow-700";
-      case "rejected":
-        return "bg-red-100 text-red-700";
-      case "in progress":
-        return "bg-blue-100 text-blue-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-foreground">
-            Application Details
+      <DialogContent className="max-w-[560px] gap-0 overflow-hidden rounded-md border border-[#d9dde3] p-0">
+        <DialogHeader className="border-b border-[#d9dde3] px-4 py-3">
+          <DialogTitle className="text-[22px] font-semibold text-[#111827]">
+            Applicant Details
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-muted-foreground">Application No</p>
-              <p className="font-medium text-foreground">
-                {application.applicationNo}
-              </p>
+        <div className="max-h-[80vh] overflow-y-auto bg-[#f7f7f7] px-1 pb-4">
+          <div className="mt-2 border border-[#d9dde3] bg-white">
+            <div className="border-b border-[#d9dde3] bg-[#e8e8ea] px-3 py-2 text-[14px] font-semibold text-[#111827]">
+              Gafbi Box
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Status</p>
-              <span
-                className={`inline-block px-3 py-1 rounded-md text-sm font-medium ${getStatusColor(application.status)}`}
+
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="flex items-center justify-between border-b border-[#eceef2] px-4 py-4 last:border-b-0"
               >
-                {application.status}
-              </span>
-            </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded bg-[#edf3f8] text-[#165480]">
+                    <FlaskConical className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[15px] text-[#1f2937]">
+                      Surface Disinfectant
+                    </p>
+                    <p className="text-[13px] text-[#6b7280]">500 ml</p>
+                  </div>
+                </div>
+                <p className="text-[15px] text-[#1f2937]">1 x</p>
+              </div>
+            ))}
           </div>
 
-          <div className="border-t border-border pt-4">
-            <h3 className="text-sm font-semibold text-foreground mb-3">
-              Personal Information
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Name</p>
-                <p className="font-medium text-foreground">
-                  {application.name}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Email</p>
-                <p className="font-medium text-foreground">
-                  {application.email}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Phone Number</p>
-                <p className="font-medium text-foreground">
-                  {application.phoneNumber}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Date Submitted</p>
-                <p className="font-medium text-foreground">
-                  {application.dateSubmitted}
-                </p>
+          <div className="mt-3 border border-[#d9dde3] bg-white">
+            <div className="border-b border-[#d9dde3] bg-[#e8e8ea] px-3 py-2 text-[14px] font-semibold text-[#111827]">
+              Data of the person to be cared for
+            </div>
+
+            <div className="border-b border-[#d9dde3] px-3 py-2 text-[14px] text-[#1c6fb0]">
+              Personal details
+            </div>
+
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">For</div>
+              <div className="px-3 py-2 text-right">
+                {application.titleFor ?? "Mr"}
               </div>
             </div>
-          </div>
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">
+                First Name
+              </div>
+              <div className="px-3 py-2 text-right">
+                {application.firstName ?? "Alex"}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">
+                Last Name
+              </div>
+              <div className="px-3 py-2 text-right">
+                {application.lastName ?? "Morgan"}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">
+                Date of birth
+              </div>
+              <div className="px-3 py-2 text-right">
+                {application.dateOfBirth ?? "November 28, 1978"}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">
+                Care level
+              </div>
+              <div className="px-3 py-2 text-right">
+                {application.careLevel ?? "level -3"}
+              </div>
+            </div>
 
-          <div className="border-t border-border pt-4">
-            <h3 className="text-sm font-semibold text-foreground mb-3">
+            <div className="border-b border-[#d9dde3] px-3 py-2 text-[14px] text-[#1c6fb0]">
               Address
-            </h3>
-            <p className="font-medium text-foreground">{application.address}</p>
-          </div>
+            </div>
 
-          <div className="border-t border-border pt-4">
-            <h3 className="text-sm font-semibold text-foreground mb-3">
-              Insurance Details
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Insurance Type</p>
-                <p className="font-medium text-foreground">
-                  {application.insuranceType}
-                </p>
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">
+                Street & House
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Insurance Provider
-                </p>
-                <p className="font-medium text-foreground">
-                  {application.insuranceProvider}
-                </p>
+              <div className="px-3 py-2 text-right">
+                {application.streetHouse ?? "Value"}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">Area</div>
+              <div className="px-3 py-2 text-right">
+                {application.area ?? "Value"}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">City</div>
+              <div className="px-3 py-2 text-right">
+                {application.city ?? "Value"}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">
+                ZIP code
+              </div>
+              <div className="px-3 py-2 text-right">
+                {application.zipCode ?? "Value"}
+              </div>
+            </div>
+
+            <div className="border-b border-[#d9dde3] px-3 py-2 text-[14px] text-[#1c6fb0]">
+              Contact details
+            </div>
+
+            <div className="grid grid-cols-2 border-b border-[#d9dde3] text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">Email</div>
+              <div className="px-3 py-2 text-right">{application.email}</div>
+            </div>
+            <div className="grid grid-cols-2 text-[14px] text-[#111827]">
+              <div className="border-r border-[#d9dde3] px-3 py-2">
+                Phone number
+              </div>
+              <div className="px-3 py-2 text-right">
+                {application.phoneNumber ?? "Value"}
               </div>
             </div>
           </div>
 
-          {application.notes && (
-            <div className="border-t border-border pt-4">
-              <h3 className="text-sm font-semibold text-foreground mb-3">
-                Notes
-              </h3>
-              <p className="text-foreground">{application.notes}</p>
-            </div>
-          )}
+          <div className="mt-3 flex justify-end gap-2 px-2">
+            <Button
+              type="button"
+              onClick={onClose}
+              className="h-9 rounded-md bg-[#dc2626] px-4 text-[14px] font-semibold text-white hover:bg-[#b91c1c]"
+            >
+              Decline
+            </Button>
+            <Button
+              type="button"
+              className="h-9 rounded-md bg-[#165480] px-4 text-[14px] font-semibold text-white hover:bg-[#124567]"
+            >
+              Approve request
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
