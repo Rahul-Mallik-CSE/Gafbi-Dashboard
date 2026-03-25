@@ -13,16 +13,19 @@ const boxItems = [
     id: "1",
     name: "Surface Disinfectant",
     quantity: "500ml",
+    imageSrc: "/demo.png",
   },
   {
     id: "2",
     name: "Surface Disinfectant",
     quantity: "500ml",
+    imageSrc: "/demo.png",
   },
   {
     id: "3",
     name: "Surface Disinfectant",
     quantity: "500ml",
+    imageSrc: "/demo.png",
   },
 ];
 

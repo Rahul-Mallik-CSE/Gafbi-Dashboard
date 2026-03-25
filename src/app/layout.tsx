@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import DashboardSidebar from "@/components/CommonComponents/DashboardSidebar";
+import NavBar from "@/components/CommonComponents/NabBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,12 @@ export default function RootLayout({
         <SidebarProvider>
           <DashboardSidebar />
           <SidebarInset className="overflow-x-hidden">
-            <div className={` bg-root-bg min-h-screen `}>{children}</div>
+            <NavBar />
+            <div
+              className={` bg-root-bg min-h-screen px-6 lg:px-8 py-1 lg:py-2`}
+            >
+              {children}
+            </div>
           </SidebarInset>
         </SidebarProvider>
       </body>
