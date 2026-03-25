@@ -6,6 +6,7 @@ import "./globals.css";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import DashboardSidebar from "@/components/CommonComponents/DashboardSidebar";
 import NavBar from "@/components/CommonComponents/NabBar";
+import { UserRoleProvider } from "@/contexts/UserRoleContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,17 +33,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SidebarProvider>
-          <DashboardSidebar />
-          <SidebarInset className="overflow-x-hidden">
-            <NavBar />
-            <div
-              className={` bg-root-bg min-h-screen px-6 lg:px-8 py-1 lg:py-2`}
-            >
-              {children}
-            </div>
-          </SidebarInset>
-        </SidebarProvider>
+        <UserRoleProvider>
+          <SidebarProvider>
+            <DashboardSidebar />
+            <SidebarInset className="overflow-x-hidden">
+              <NavBar />
+              <div
+                className={` bg-root-bg min-h-screen px-6 lg:px-8 py-1 lg:py-2`}
+              >
+                {children}
+              </div>
+            </SidebarInset>
+          </SidebarProvider>
+        </UserRoleProvider>
       </body>
     </html>
   );

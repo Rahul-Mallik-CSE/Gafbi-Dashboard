@@ -22,15 +22,22 @@ import {
   LogOut,
   Truck,
   User,
+  Users,
+  Package,
+  ShoppingCart,
+  FileText,
+  Settings,
 } from "lucide-react";
+import { useUserRole } from "@/contexts/UserRoleContext";
 
 export default function DashboardSidebar() {
   const { state } = useSidebar();
   const pathname = usePathname();
+  const { role } = useUserRole();
 
   const isCollapsed = state === "collapsed";
 
-  const navItems = [
+  const userNavItems = [
     {
       href: "/",
       icon: List,
@@ -67,6 +74,41 @@ export default function DashboardSidebar() {
       label: "Unsubscribe",
     },
   ];
+
+  const adminNavItems = [
+    {
+      href: "/admin/users",
+      icon: Users,
+      label: "Users",
+    },
+    {
+      href: "/admin/catalogue",
+      icon: Package,
+      label: "Catalogue",
+    },
+    {
+      href: "/admin/orders",
+      icon: ShoppingCart,
+      label: "Orders",
+    },
+    {
+      href: "/admin/applications",
+      icon: FileText,
+      label: "Applications",
+    },
+    {
+      href: "/admin/settings",
+      icon: Settings,
+      label: "Settings",
+    },
+    {
+      href: "/sign-in",
+      icon: LogOut,
+      label: "Sign out",
+    },
+  ];
+
+  const navItems = role === "admin" ? adminNavItems : userNavItems;
 
   if (
     pathname == "/sign-in" ||
@@ -120,10 +162,12 @@ export default function DashboardSidebar() {
         {!isCollapsed && (
           <div className="mb-4 px-1">
             <p className="text-[17px] font-semibold leading-tight text-primary">
-              Alex Morgan
+              {role === "admin" ? "Admin User" : "Alex Morgan"}
             </p>
             <p className="mt-0.5 text-[11px] leading-tight text-tertiary">
-              alexmorgan86@gmail.com
+              {role === "admin"
+                ? "admin@gafbi.com"
+                : "alexmorgan86@gmail.com"}
             </p>
           </div>
         )}
