@@ -13,18 +13,33 @@ import {
 } from "@/components/ManageGafbiBoxComponents";
 
 const initialCareBoxItems: CareBoxProduct[] = [
-  { id: "1", name: "Surface Disinfectant", quantity: "500ml" },
-  { id: "2", name: "Surface Disinfectant", quantity: "500ml" },
-  { id: "3", name: "Surface Disinfectant", quantity: "500ml" },
+  {
+    id: "1",
+    name: "Surface Disinfectant",
+    quantity: "500ml",
+    imageSrc: "/demo.png",
+  },
+  {
+    id: "2",
+    name: "Surface Disinfectant",
+    quantity: "500ml",
+    imageSrc: "/demo.png",
+  },
+  {
+    id: "3",
+    name: "Surface Disinfectant",
+    quantity: "500ml",
+    imageSrc: "/demo.png",
+  },
 ];
 
 const initialOtherProducts: OtherProduct[] = [
-  { id: "p1", name: "Hand Sanitizer", quantity: 0 },
-  { id: "p2", name: "Face Masks", quantity: 0 },
-  { id: "p3", name: "Disposable Gloves", quantity: 0 },
-  { id: "p4", name: "Antibacterial Wipes", quantity: 0 },
-  { id: "p5", name: "Body Lotion", quantity: 0 },
-  { id: "p6", name: "Wound Care Kit", quantity: 0 },
+  { id: "p1", name: "Hand Sanitizer", quantity: 0, imageSrc: "/demo.png" },
+  { id: "p2", name: "Face Masks", quantity: 0, imageSrc: "/demo.png" },
+  { id: "p3", name: "Disposable Gloves", quantity: 0, imageSrc: "/demo.png" },
+  { id: "p4", name: "Antibacterial Wipes", quantity: 0, imageSrc: "/demo.png" },
+  { id: "p5", name: "Body Lotion", quantity: 0, imageSrc: "/demo.png" },
+  { id: "p6", name: "Wound Care Kit", quantity: 0, imageSrc: "/demo.png" },
 ];
 
 const MAX_ITEMS = 6;
@@ -81,17 +96,11 @@ const ManageGafbiBoxPage = () => {
 
       <div className="mt-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full sm:w-auto">
-            <TabsTrigger
-              value="my-care-box"
-              className="flex-1 sm:flex-none px-6"
-            >
+          <TabsList className="w-full md:w-80">
+            <TabsTrigger value="my-care-box" className=" px-6">
               My care box
             </TabsTrigger>
-            <TabsTrigger
-              value="other-products"
-              className="flex-1 sm:flex-none px-6"
-            >
+            <TabsTrigger value="other-products" className=" px-6">
               Other products
             </TabsTrigger>
           </TabsList>
