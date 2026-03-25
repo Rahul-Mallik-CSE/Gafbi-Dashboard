@@ -11,99 +11,111 @@ import DeleteProductModal from "@/components/AdminComponents/CatalogueComponents
 const mockProducts: Product[] = [
   {
     id: "1",
-    name: "Vitamin D3 Supplements",
-    category: "Vitamins",
-    status: true,
-    image: "/products/vitamin-d3.jpg",
+    productId: "DS-FLS90121",
+    productName: "G 5558",
+    pcsMl: "9 Pcs /Box",
+    inventory: 203,
   },
   {
     id: "2",
-    name: "Omega-3 Fish Oil",
-    category: "Supplements",
-    status: true,
-    image: "/products/omega3.jpg",
+    productId: "DS-US82931E",
+    productName: "G 5430 Active",
+    pcsMl: "2 Pcs /Box",
+    inventory: 203,
   },
   {
     id: "3",
-    name: "Multivitamin Complex",
-    category: "Vitamins",
-    status: false,
-    image: "/products/multivitamin.jpg",
+    productId: "DS-JLS9181S",
+    productName: "G 7431",
+    pcsMl: "54 Pcs /Box",
+    inventory: 203,
   },
   {
     id: "4",
-    name: "Protein Powder",
-    category: "Nutrition",
-    status: true,
-    image: "/products/protein.jpg",
+    productId: "DS-JDUE019H",
+    productName: "G 5420 Active Plus",
+    pcsMl: "54 Pcs /Box",
+    inventory: 203,
   },
   {
     id: "5",
-    name: "Calcium Tablets",
-    category: "Minerals",
-    status: true,
-    image: "/products/calcium.jpg",
+    productId: "DS-US82931E",
+    productName: "G 5001 Silver Edition",
+    pcsMl: "5 Pcs /Box",
+    inventory: 203,
   },
   {
     id: "6",
-    name: "Probiotic Capsules",
-    category: "Digestive Health",
-    status: false,
-    image: "/products/probiotic.jpg",
+    productId: "DS-PS01ID92",
+    productName: "G 5640 Autodos Excellence",
+    pcsMl: "2 Pcs /Box",
+    inventory: 203,
   },
   {
     id: "7",
-    name: "Iron Supplements",
-    category: "Minerals",
-    status: true,
-    image: "/products/iron.jpg",
+    productId: "DS-FLS90121",
+    productName: "G 5217 Selection",
+    pcsMl: "4 Pcs /Box",
+    inventory: 203,
   },
   {
     id: "8",
-    name: "Vitamin C Tablets",
-    category: "Vitamins",
-    status: true,
-    image: "/products/vitamin-c.jpg",
+    productId: "DS-FG72TSOQ",
+    productName: "G 5212 Autodos",
+    pcsMl: "4.61 mL",
+    inventory: 203,
   },
   {
     id: "9",
-    name: "Zinc Lozenges",
-    category: "Minerals",
-    status: true,
-    image: "/products/zinc.jpg",
+    productId: "DS-JDUE019H",
+    productName: "G 5267 SCVI XXL Active plus",
+    pcsMl: "0.31 mL",
+    inventory: 203,
   },
   {
     id: "10",
-    name: "Collagen Peptides",
-    category: "Beauty",
-    status: false,
-    image: "/products/collagen.jpg",
+    productId: "DS-J8273HOW",
+    productName: "G 5222 Excellence",
+    pcsMl: "3.90 mL",
+    inventory: 203,
   },
   {
     id: "11",
-    name: "B-Complex Vitamins",
-    category: "Vitamins",
-    status: true,
-    image: "/products/b-complex.jpg",
+    productId: "DS-J8273HOW",
+    productName: "G 5222 Excellence",
+    pcsMl: "3.13 mL",
+    inventory: 203,
   },
   {
     id: "12",
-    name: "Magnesium Citrate",
-    category: "Minerals",
-    status: true,
-    image: "/products/magnesium.jpg",
+    productId: "DS-FG72TSOQ",
+    productName: "G 5212 Autodos",
+    pcsMl: "4.61 mL",
+    inventory: 203,
+  },
+  {
+    id: "13",
+    productId: "DS-ID92IE01",
+    productName: "G 7455",
+    pcsMl: "4.61 mL",
+    inventory: 203,
   },
 ];
 
 const CataloguePage = () => {
   const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [productModalOpen, setProductModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  const handleAddProduct = () => {
+    setSelectedProduct(null);
+    setProductModalOpen(true);
+  };
+
   const handleEditProduct = (product: Product) => {
     setSelectedProduct(product);
-    setEditModalOpen(true);
+    setProductModalOpen(true);
   };
 
   const handleDeleteProduct = (product: Product) => {
@@ -111,16 +123,26 @@ const CataloguePage = () => {
     setDeleteModalOpen(true);
   };
 
-  const handleToggleStatus = (product: Product) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === product.id ? { ...p, status: !p.status } : p)),
-    );
-  };
-
   const handleSaveProduct = (updatedProduct: Product) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)),
-    );
+    if (updatedProduct.id) {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)),
+      );
+      return;
+    }
+
+    const newId = `${products.length + 1}`;
+    const newProductId = `DS-NEW${String(products.length + 1).padStart(4, "0")}`;
+
+    setProducts((prev) => [
+      ...prev,
+      {
+        ...updatedProduct,
+        id: newId,
+        productId: newProductId,
+        inventory: 203,
+      },
+    ]);
   };
 
   const handleConfirmDelete = () => {
@@ -130,17 +152,17 @@ const CataloguePage = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6">
+    <div className="">
       <CatalogueTable
         products={products}
+        onAddProduct={handleAddProduct}
         onEditProduct={handleEditProduct}
         onDeleteProduct={handleDeleteProduct}
-        onToggleStatus={handleToggleStatus}
       />
 
       <EditProductModal
-        isOpen={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
+        isOpen={productModalOpen}
+        onClose={() => setProductModalOpen(false)}
         product={selectedProduct}
         onSave={handleSaveProduct}
       />
