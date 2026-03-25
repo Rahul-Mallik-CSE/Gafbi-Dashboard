@@ -42,7 +42,10 @@ const DeleteProductModal = ({
         <div className="flex flex-col items-center py-4">
           <p className="mb-6 text-center text-foreground">
             Are you sure you want to delete{" "}
-            <span className="font-bold text-destructive">{product?.name}</span>?
+            <span className="font-bold text-destructive">
+              {product?.productName}
+            </span>
+            ?
           </p>
           <p className="mb-6 text-sm text-muted-foreground text-center">
             This action cannot be undone.

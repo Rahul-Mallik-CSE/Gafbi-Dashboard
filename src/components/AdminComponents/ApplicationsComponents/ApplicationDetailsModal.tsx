@@ -27,7 +27,7 @@ const ApplicationDetailsModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[560px] gap-0 overflow-hidden rounded-md border border-[#d9dde3] p-0">
+      <DialogContent className="max-w-140 gap-0 overflow-hidden rounded-md border border-[#d9dde3] p-0">
         <DialogHeader className="border-b border-[#d9dde3] px-4 py-3">
           <DialogTitle className="text-[22px] font-semibold text-[#111827]">
             Applicant Details

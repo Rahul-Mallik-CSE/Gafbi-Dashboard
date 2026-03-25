@@ -1,16 +1,6 @@
 /** @format */
 "use client";
 
-import { Bell, ChevronDown } from "lucide-react";
-import Image from "next/image";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { UserCog, LogOut } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import LogoutModal from "./LogOutModal";
