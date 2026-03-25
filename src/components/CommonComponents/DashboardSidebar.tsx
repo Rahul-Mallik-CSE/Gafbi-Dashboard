@@ -100,11 +100,18 @@ export default function DashboardSidebar() {
               isCollapsed ? "justify-center" : "gap-2.5",
             )}
           >
-            {!isCollapsed && (
-              <div className="pt-0.5">
-                <p className="text-sm font-semibold leading-none text-primary">
-                  Gafbi Health Care
-                </p>
+            {isCollapsed ? (
+              <Image src="/logo.png" alt="Logo" width={40} height={40} />
+            ) : (
+              <div className="mt-2 flex items-center gap-2">
+                <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  width={150}
+                  height={150}
+                  className="w-9 h-9"
+                />{" "}
+                Gafbi Health Care
               </div>
             )}
           </Link>
