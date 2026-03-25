@@ -173,8 +173,8 @@ function NavItem({
               ? "flex size-10 items-center justify-center rounded-lg transition-colors"
               : "flex h-10 items-center gap-2.5 rounded-md px-3 text-sm transition-colors",
             active
-              ? "bg-background text-primary"
-              : "text-primary/90 hover:bg-background/70 hover:text-primary",
+              ? "bg-background text-primary hover:text-primary! hover:bg-background/90!"
+              : "text-primary/90  hover:bg-background/60! hover:text-primary!",
           )}
         >
           <Icon size={17} strokeWidth={1.75} />
