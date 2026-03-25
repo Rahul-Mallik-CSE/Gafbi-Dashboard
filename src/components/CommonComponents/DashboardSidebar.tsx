@@ -109,6 +109,7 @@ export default function DashboardSidebar() {
   ];
 
   const navItems = role === "admin" ? adminNavItems : userNavItems;
+  const homeHref = role === "admin" ? "/admin/users" : "/overview";
 
   const handleLogout = () => {
     setIsLogoutModalOpen(false);
@@ -141,7 +142,7 @@ export default function DashboardSidebar() {
       >
         <div className={cn("mb-5", isCollapsed ? "px-0" : "px-1")}>
           <Link
-            href="/"
+            href={homeHref}
             className={cn(
               "flex items-start",
               isCollapsed ? "justify-center" : "gap-2.5",
