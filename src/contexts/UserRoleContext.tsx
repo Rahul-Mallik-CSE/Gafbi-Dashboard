@@ -19,6 +19,7 @@ export function UserRoleProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedRole = localStorage.getItem("userRole") as UserRole;
     if (savedRole) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRole(savedRole);
     }
   }, []);

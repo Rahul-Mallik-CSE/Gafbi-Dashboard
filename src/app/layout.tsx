@@ -1,15 +1,16 @@
 /** @format */
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Asap_Condensed, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import DashboardSidebar from "@/components/CommonComponents/DashboardSidebar";
 import NavBar from "@/components/CommonComponents/NabBar";
 import { UserRoleProvider } from "@/contexts/UserRoleContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const asapCondensed = Asap_Condensed({
+  variable: "--font-asap-condensed",
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
 });
 
@@ -29,10 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className={`${asapCondensed.variable} ${geistMono.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-(--color-background)">
         <UserRoleProvider>
           <SidebarProvider>
             <DashboardSidebar />
